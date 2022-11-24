@@ -1,6 +1,6 @@
 
 import { scrape } from "./airbnb";
-import { sendNewListingMessage, sendUpdatedListingMessage } from "./telegram";
+import { sendDebugLog, sendNewListingMessage, sendUpdatedListingMessage } from "./telegram";
 import { Listing } from "./listing";
 import { cutGroup1 } from "./regex";
 import * as dotenv from "dotenv";
@@ -48,3 +48,5 @@ async function run() {
   });
 
 }
+
+setInterval(() => sendDebugLog("I am alive - " + Date.now().toString()), 1000 * 60 * 60 * 24)
