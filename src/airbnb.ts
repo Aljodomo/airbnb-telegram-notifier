@@ -1,6 +1,9 @@
 import * as puppeteer from 'puppeteer';
 import * as proxyChain from "proxy-chain";
 import { Listing } from './listing';
+import { sendDebugLog } from './telegram';
+
+let pageTitle = ""; 
 
 export async function scrape() {
 
@@ -59,7 +62,12 @@ export async function scrape() {
             }
         );
 
-        console.log("Loaded page with title : " + await page.title());
+        const curPageTitle = await page.title();
+        console.log("Loaded page with title : " + curPageTitle);
+        if(curPageTitle !== pageTitle) {
+            sendDebugLog("Page title has changed\n\n" + curPageTitle);
+        }
+        pageTitle = curPageTitle;
 
         result = await page.$$eval(".c4mnd7m", (listings: any) => {
             return listings.map((listing: any) => {
