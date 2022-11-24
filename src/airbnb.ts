@@ -3,8 +3,6 @@ import * as proxyChain from "proxy-chain";
 import { Listing } from './listing';
 import { sendDebugLog } from './telegram';
 
-let pageTitle = ""; 
-
 export async function scrape() {
 
     const username = process.env.PROXY_USERNAME!;
@@ -64,10 +62,9 @@ export async function scrape() {
 
         const curPageTitle = await page.title();
         console.log("Loaded page with title : " + curPageTitle);
-        if(curPageTitle !== pageTitle) {
-            sendDebugLog("Page title has changed\n\n" + curPageTitle);
+        if(curPageTitle.toLowerCase().includes("denied") || !curPageTitle.toLowerCase().includes("airbnb")) {
+            sendDebugLog("Sus page title\n\n" + curPageTitle);
         }
-        pageTitle = curPageTitle;
 
         result = await page.$$eval(".c4mnd7m", (listings: any) => {
             return listings.map((listing: any) => {
