@@ -15,9 +15,6 @@ The notification contains the following information in a single text message
 
 There are also notifications about changed prices
 
-
-
-
 ## Enviroment varibables
 
 | Name | description | type |
@@ -30,3 +27,18 @@ There are also notifications about changed prices
 | TELEGRAM_API_KEY | Telegram bot api key for notifications | string |  
 | TELEGRAM_TARGET_CHAT_ID | Telegram chat id to send notifications to | string |
 | TELEGRAM_DEBUG_CHAT_ID | Telegram chat id to send debug notifications to | string |
+
+## Usage
+
+Nodejs needs to be installed
+
+Check with 
+
+```
+node --version
+```
+
+Run with
+```
+npm run serve
+```
