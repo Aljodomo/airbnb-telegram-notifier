@@ -12,41 +12,53 @@ const INTERVAL_TIME = 1000 * 60 * 2; // every 2 minutes
 
 const store: Map<string, Listing> = new Map();
 
-run();
-setInterval(() => run(), INTERVAL_TIME);
-
 async function run() {
   const listings: Listing[] = await scrape();
 
-  const currentlyPresentListings = new Set();
+  const currentlyPresentListingIds = new Set();
 
   listings.forEach((currentListing) => {
-    const id: string = cutGroup1("\/rooms\/([0-9]+)\?", currentListing.url)!;
+    const id: string | null = cutGroup1("\/rooms\/([0-9]+)\?", currentListing.url);
 
-    currentlyPresentListings.add(id);
+    if(!id) {
+      console.error("Could not get id");
+      console.error(currentListing);
+      return;
+    }
+
+    currentlyPresentListingIds.add(id);
 
     if (store.has(id)) {
       const storedListing: Listing = store.get(id)!;
+
       if (storedListing.priceText !== currentListing.priceText) {
         sendUpdatedListingMessage(storedListing.url, storedListing.priceText, currentListing.priceText);
         store.set(id, currentListing);
-        console.log("Listing has changed deleted");
+        console.log("Listing updated with id " + id);
       } else {
         console.log("No new listings found");
       }
     } else {
       sendNewListingMessage(currentListing.url, currentListing.priceText);
       store.set(id, currentListing);
-      console.log("New listings found");
+      console.log("New listings found with id: " + id);
     }
   });
 
-  store.forEach((listing, id) => {
-    if(!currentlyPresentListings.has(id)) {
+  // Delete if not present anymore
+
+  const storeIds = store.keys;
+  for(let id in storeIds) {
+    if(!currentlyPresentListingIds.has(id)) {
       store.delete(id);
     }
-  });
+  }
 
+  console.log(store);
+  
 }
 
 setInterval(() => sendDebugLog("I am alive - " + Date.now().toString()), 1000 * 60 * 60 * 24)
+
+run();
+setInterval(() => run(), INTERVAL_TIME);
