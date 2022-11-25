@@ -3,7 +3,7 @@ import * as proxyChain from "proxy-chain";
 import { Listing } from './listing';
 import { sendDebugLog } from './telegram';
 
-export async function scrape() {
+export async function scrape(): Promise<Listing[]> {
 
     const username = process.env.PROXY_USERNAME!;
     const password = process.env.PROXY_PASSWORD!;
